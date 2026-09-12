@@ -1,36 +1,91 @@
-
+import { useState, useEffect } from "react";
 import {
   FaChartBar,
   FaClipboardCheck,
   FaBookOpen,
   FaArrowRight,
 } from "react-icons/fa";
+import axios from "axios";
 import ProgressBar from "../components/ProgressBar";
 import RecommendationCard from "../components/RecommendationCard";
 
 const Dashboard = ({
-  user,
-  competencies,
-  recommendations,
+  user: userProp,
+  competencies: competenciesProp,
+  recommendations: recommendationsProp,
   onNavigate,
 }) => {
-  const highGaps = competencies.filter((item) => item.score <= 40);
-
-  const averageScore = Math.round(
-    competencies.reduce((sum, item) => sum + item.score, 0) /
-      competencies.length
+  const [user, setUser] = useState(userProp);
+  const [competencies, setCompetencies] = useState(competenciesProp || []);
+  const [recommendations, setRecommendations] = useState(
+    recommendationsProp || []
   );
+  const [recentActivity, setRecentActivity] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // ✅ Fetch dashboard data from backend on mount
+  useEffect(() => {
+    const fetchDashboard = async () => {
+      try {
+        const API_URL =
+          import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(`${API_URL}/api/dashboard`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+
+        const data = response.data;
+
+        if (data.user) setUser(data.user);
+        if (data.competencies) setCompetencies(data.competencies);
+        if (data.recommendations) setRecommendations(data.recommendations);
+        if (data.recentActivity) setRecentActivity(data.recentActivity);
+      } catch (err) {
+        console.error("Dashboard fetch error:", err);
+        setError("Using cached data. Live sync unavailable.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboard();
+  }, []);
+
+  const highGaps = (competencies || []).filter((item) => item.score <= 40);
+
+  const averageScore =
+    competencies.length > 0
+      ? Math.round(
+          competencies.reduce((sum, item) => sum + item.score, 0) /
+            competencies.length
+        )
+      : 0;
+
+  if (loading) {
+    return (
+      <main className="bg-[#F8FAFC] min-h-screen py-8">
+        <div className="max-w-7xl mx-auto px-4 text-center py-20">
+          <p className="text-slate-500">Loading dashboard...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="bg-[#F8FAFC] min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4">
         <div className="bg-[#0F172A] text-white p-7 md:p-9">
-          <p className="text-sm text-slate-300">
-            Welcome back
-          </p>
+          <p className="text-sm text-slate-300">Welcome back</p>
 
           <h1 className="text-2xl md:text-3xl font-bold mt-2">
-            {user?.name || "Ananya Sharma"}
+            {user?.name || "Officer"}
           </h1>
 
           <p className="text-slate-300 mt-2">
@@ -53,6 +108,12 @@ const Dashboard = ({
             </button>
           </div>
         </div>
+
+        {error && (
+          <div className="mt-4 bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 text-sm">
+            {error}
+          </div>
+        )}
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           {[
@@ -120,13 +181,19 @@ const Dashboard = ({
             </div>
 
             <div className="p-6 space-y-6">
-              {competencies.map((skill) => (
-                <ProgressBar
-                  key={skill.id}
-                  value={skill.score}
-                  label={skill.name}
-                />
-              ))}
+              {competencies.length > 0 ? (
+                competencies.map((skill) => (
+                  <ProgressBar
+                    key={skill.id}
+                    value={skill.score}
+                    label={skill.name}
+                  />
+                ))
+              ) : (
+                <p className="text-sm text-slate-500">
+                  No competencies available.
+                </p>
+              )}
             </div>
           </div>
 
@@ -191,15 +258,52 @@ const Dashboard = ({
           </div>
 
           <div className="grid md:grid-cols-2 gap-5">
-            {recommendations.slice(0, 2).map((course) => (
-              <RecommendationCard
-                key={course.id}
-                course={course}
-                onStart={() => onNavigate("quiz")}
-              />
-            ))}
+            {recommendations.length > 0 ? (
+              recommendations.slice(0, 2).map((course) => (
+                <RecommendationCard
+                  key={course.id}
+                  course={course}
+                  onStart={() => onNavigate("quiz")}
+                />
+              ))
+            ) : (
+              <p className="text-sm text-slate-500">
+                No recommendations yet.
+              </p>
+            )}
           </div>
         </div>
+
+        {recentActivity.length > 0 && (
+          <div className="mt-6 bg-white border border-slate-200">
+            <div className="px-6 py-5 border-b border-slate-200">
+              <h2 className="font-bold text-slate-900">
+                Recent Activity
+              </h2>
+            </div>
+
+            <div className="divide-y divide-slate-200">
+              {recentActivity.map((activity, idx) => (
+                <div
+                  key={idx}
+                  className="px-6 py-4 flex items-center justify-between"
+                >
+                  <div>
+                    <p className="text-sm font-semibold text-slate-800">
+                      {activity.description}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">
+                      {activity.date}
+                    </p>
+                  </div>
+                  <span className="text-sm font-bold text-[#1E3A8A]">
+                    {activity.score}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );

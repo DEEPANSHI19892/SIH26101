@@ -5,19 +5,48 @@ import {
   FaShieldAlt,
   FaArrowLeft,
 } from "react-icons/fa";
+import axios from "axios";
 import Button from "../components/Button";
 
 const Login = ({ onLogin, onNavigate }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    onLogin({
-      email,
-      password,
-    });
+    try {
+      const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8000";
+      const response = await axios.post(`${API_URL}/api/auth/login`, {
+        email,
+        password,
+      });
+
+      // ✅ Store token and user in localStorage
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+
+      // ✅ Trigger App.jsx login handler
+      onLogin({
+        email: response.data.user.email,
+        password: "",
+      });
+    } catch (err) {
+      console.error("Login error:", err);
+      if (err.response?.status === 401) {
+        setError("Invalid email or password. Please try again.");
+      } else if (err.response?.data?.detail) {
+        setError(err.response.data.detail);
+      } else {
+        setError("Login failed. Please check your connection.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -111,6 +140,13 @@ const Login = ({ onLogin, onNavigate }) => {
                 </div>
               </div>
 
+              {/* ✅ Error message display */}
+              {error && (
+                <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm">
+                  {error}
+                </div>
+              )}
+
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center gap-2 text-slate-600">
                   <input type="checkbox" />
@@ -125,16 +161,14 @@ const Login = ({ onLogin, onNavigate }) => {
                 </button>
               </div>
 
-              <Button type="submit" className="w-full">
-                Sign In
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
 
             <div className="mt-8 pt-6 border-t border-slate-200">
               <p className="text-xs text-slate-500 leading-5">
-                This interface is a prototype developed for Smart India
-                Hackathon. Authentication shown here is for demonstration
-                purposes.
+                Demo credentials: <strong>officer@mospi.gov.in</strong> / <strong>demo123</strong>
               </p>
             </div>
           </div>

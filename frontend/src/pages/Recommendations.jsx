@@ -1,23 +1,61 @@
-import { useMemo, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { FaFilter, FaSearch } from "react-icons/fa";
+import axios from "axios";
 import RecommendationCard from "../components/RecommendationCard";
 
 const Recommendations = ({
-  recommendations,
+  recommendations: recommendationsProp,
   onNavigate,
 }) => {
+  const [recommendations, setRecommendations] = useState(
+    recommendationsProp || []
+  );
   const [search, setSearch] = useState("");
   const [priority, setPriority] = useState("ALL");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  // ✅ Fetch recommendations from backend on mount
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      try {
+        const API_URL =
+          import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        // Get user ID from localStorage
+        const storedUser = localStorage.getItem("user");
+        const userData = storedUser ? JSON.parse(storedUser) : null;
+        const userId = userData?.id || 1;
+
+        const response = await axios.get(
+          `${API_URL}/api/recommendations/${userId}`
+        );
+
+        if (response.data.recommendations) {
+          setRecommendations(response.data.recommendations);
+        }
+      } catch (err) {
+        console.error("Recommendations fetch error:", err);
+        setError("Using cached recommendations. Live sync unavailable.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecommendations();
+  }, []);
 
   const filtered = useMemo(() => {
     return recommendations.filter((course) => {
       const matchesSearch =
-        course.title
-          .toLowerCase()
-          .includes(search.toLowerCase()) ||
-        course.skill
-          .toLowerCase()
-          .includes(search.toLowerCase());
+        course.title?.toLowerCase().includes(search.toLowerCase()) ||
+        course.skill?.toLowerCase().includes(search.toLowerCase());
 
       const matchesPriority =
         priority === "ALL" || course.priority === priority;
@@ -43,6 +81,12 @@ const Recommendations = ({
             competency profile and identified development needs.
           </p>
         </div>
+
+        {error && (
+          <div className="mb-5 bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 text-sm">
+            {error}
+          </div>
+        )}
 
         <div className="bg-white border border-slate-200 p-5 mb-6">
           <div className="grid md:grid-cols-3 gap-4">
@@ -74,30 +118,38 @@ const Recommendations = ({
           </div>
         </div>
 
-        <div className="mb-4 text-sm text-slate-500">
-          Showing {filtered.length} learning opportunities
-        </div>
-
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {filtered.map((course) => (
-            <RecommendationCard
-              key={course.id}
-              course={course}
-              onStart={() => onNavigate("quiz")}
-            />
-          ))}
-        </div>
-
-        {filtered.length === 0 && (
-          <div className="bg-white border border-slate-200 p-10 text-center">
-            <h3 className="font-semibold text-slate-900">
-              No learning opportunities found
-            </h3>
-
-            <p className="text-sm text-slate-500 mt-2">
-              Try changing your search or priority filter.
-            </p>
+        {loading ? (
+          <div className="text-center py-10">
+            <p className="text-slate-500">Loading recommendations...</p>
           </div>
+        ) : (
+          <>
+            <div className="mb-4 text-sm text-slate-500">
+              Showing {filtered.length} learning opportunities
+            </div>
+
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {filtered.map((course) => (
+                <RecommendationCard
+                  key={course.id}
+                  course={course}
+                  onStart={() => onNavigate("quiz")}
+                />
+              ))}
+            </div>
+
+            {filtered.length === 0 && (
+              <div className="bg-white border border-slate-200 p-10 text-center">
+                <h3 className="font-semibold text-slate-900">
+                  No learning opportunities found
+                </h3>
+
+                <p className="text-sm text-slate-500 mt-2">
+                  Try changing your search or priority filter.
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
     </main>

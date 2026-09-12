@@ -1,21 +1,78 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FaClipboardCheck,
   FaInfoCircle,
 } from "react-icons/fa";
+import axios from "axios";
 import Button from "../components/Button";
-import { proficiencyLevels } from "../data/data";
+
+const proficiencyLevels = {
+  Beginner: 40,
+  Intermediate: 65,
+  Advanced: 90,
+};
 
 const Assessment = ({
-  competencies,
+  competencies: competenciesProp,
   onUpdateCompetency,
   onNavigate,
 }) => {
-  const [selected, setSelected] = useState(
-    Object.fromEntries(
-      competencies.map((skill) => [skill.id, skill.level])
-    )
+  const [competencies, setCompetencies] = useState(
+    competenciesProp || []
   );
+  const [selected, setSelected] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+
+  // ✅ Fetch competencies from backend on mount
+  useEffect(() => {
+    const fetchCompetencies = async () => {
+      try {
+        const API_URL =
+          import.meta.env.VITE_API_URL || "http://localhost:8000";
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+        const response = await axios.get(
+          `${API_URL}/api/competencies`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        const comps = response.data.competencies || [];
+        setCompetencies(comps);
+
+        // Initialize selected state
+        const initialSelected = {};
+        comps.forEach((skill) => {
+          initialSelected[skill.id] = skill.level;
+        });
+        setSelected(initialSelected);
+      } catch (err) {
+        console.error("Assessment fetch error:", err);
+        setError("Using cached data. Live sync unavailable.");
+
+        // Fallback
+        if (competenciesProp && competenciesProp.length > 0) {
+          const initialSelected = {};
+          competenciesProp.forEach((skill) => {
+            initialSelected[skill.id] = skill.level;
+          });
+          setSelected(initialSelected);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCompetencies();
+  }, []);
 
   const handleChange = (id, level) => {
     setSelected((prev) => ({
@@ -23,8 +80,38 @@ const Assessment = ({
       [id]: level,
     }));
 
-    onUpdateCompetency(id, level);
+    if (onUpdateCompetency) {
+      onUpdateCompetency(id, level);
+    }
   };
+
+  const handleSave = async () => {
+    setSaving(true);
+    setError("");
+
+    try {
+      // Save each competency update to backend (optional — if backend supports)
+      // For now, just navigate to dashboard
+      setTimeout(() => {
+        setSaving(false);
+        onNavigate("dashboard");
+      }, 500);
+    } catch (err) {
+      console.error("Assessment save error:", err);
+      setError("Failed to save assessment.");
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <main className="bg-[#F8FAFC] min-h-screen py-8">
+        <div className="max-w-7xl mx-auto px-4 text-center py-20">
+          <p className="text-slate-500">Loading assessment...</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="bg-[#F8FAFC] min-h-screen py-8">
@@ -60,6 +147,12 @@ const Assessment = ({
             </p>
           </div>
         </div>
+
+        {error && (
+          <div className="mb-5 bg-yellow-50 border border-yellow-200 text-yellow-800 px-4 py-3 text-sm">
+            {error}
+          </div>
+        )}
 
         <div className="bg-white border border-slate-200">
           <div className="px-6 py-5 border-b border-slate-200 flex items-center gap-3">
@@ -122,8 +215,8 @@ const Assessment = ({
           </div>
 
           <div className="px-6 py-5 border-t border-slate-200 bg-slate-50 flex justify-end">
-            <Button onClick={() => onNavigate("dashboard")}>
-              Save Assessment
+            <Button onClick={handleSave} disabled={saving}>
+              {saving ? "Saving..." : "Save Assessment"}
             </Button>
           </div>
         </div>

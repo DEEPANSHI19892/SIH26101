@@ -1,470 +1,268 @@
-# SIH26101 — AI-Enabled Learning & Competency Platform
+# Samarth Setu
 
-> **Team: Sentinel**  
-> **SIH 2026 | Software | Smart Education**
+### AI-Enabled Learning & Competency Platform for India's Official Statistical System
 
-## Problem Statement
+**Smart India Hackathon 2026 | Software | Smart Education**
 
-**SIH26101**
-
-Develop an AI-enabled learning platform that identifies competency gaps, recommends personalized training through integration with the **iGoT Karmayogi ecosystem**, and generates **quizzes and multiple-choice questions (MCQs)** from uploaded learning materials to strengthen capacity building in India's Official Statistical System.
-
-## Organization
-
-**Ministry of Statistics & Programme Implementation (MoSPI)**
-
-### Department
-**Data Informatics & Innovation Division (DIID)**
-
-### Theme
-**Smart Education**
+**Problem Statement ID:** SIH26101  
+**Organization:** Ministry of Statistics & Programme Implementation (MoSPI)  
+**Department:** Data Informatics & Innovation Division (DIID)
 
 ---
 
-# 🎯 Our Solution
+## Overview
 
-We propose an **AI-enabled Skill Intelligence and Learning Platform** for government officials working in the Official Statistical System.
+**Samarth Setu** is an AI-powered skill intelligence and learning platform designed for officials working in India's Official Statistical System.
 
-The platform will:
-
-- Build an official's competency profile
-- Assess existing competencies
-- Identify skill gaps
-- Recommend personalized learning paths
-- Connect recommended learning with the iGoT Karmayogi ecosystem
-- Support NSSTA/TPAC training recommendations
-- Generate MCQs and quizzes from uploaded learning materials
-- Track learning progress and competency improvement
-- Provide learner and administrator dashboards
+The platform identifies competency gaps, recommends personalized training aligned with the **iGOT Karmayogi** ecosystem and **NSSTA/TPAC** programmes, and generates **MCQs and quizzes from uploaded learning material** using Retrieval-Augmented Generation (RAG) and Large Language Models.
 
 ---
 
-# 🔄 Core Workflow
+## Problem
 
-```text
-Official Profile
-       ↓
-Competency Assessment
-       ↓
-Skill Gap Analysis
-       ↓
-Personalized Recommendations
-       ↓
-Learning / Training
-       ↓
-Upload Learning Material
-       ↓
-RAG + LLM
-       ↓
-AI-Generated MCQs / Quiz
-       ↓
-Assessment Result
-       ↓
-Progress & Competency Update
+Officers in India's Official Statistical System require continuous upskilling in modern statistical, technical, and digital skills. Existing learning platforms offer generic courses with:
 
+- No visibility into an officer's own competency profile
+- No structured skill-gap assessment for Official Statistics roles
+- No personalized learning pathway aligned with job roles
+- Manual, slow, and inconsistent MCQ creation for training
+- No dashboard to measure how training improves competency over time
+
+---
+
+## Solution
+
+Samarth Setu addresses these gaps through a single integrated platform:
+
+| Module | What It Does |
+|--------|--------------|
+| **Competency Profiling** | Builds a structured profile per officer across 4 domains |
+| **AI-Based Assessment** | Benchmarks current proficiency against role requirements |
+| **Skill-Gap Analysis** | Identifies gaps with HIGH / MEDIUM / LOW priority |
+| **Personalized Recommendations** | Recommends courses from iGOT Karmayogi and NSSTA/TPAC |
+| **AI MCQ Generation** | Generates context-aware MCQs from uploaded PDFs using RAG + LLM |
+| **Progress Tracking** | Tracks competency improvement and training history |
+| **Dual Dashboards** | Learner view + MoSPI/DIID admin view |
+
+---
+
+## Workflow
+
+```
+Officer Login
+     ↓
+Competency Profile
+     ↓
+AI-Based Assessment
+     ↓
+Skill-Gap Analysis
+     ↓
+Personalized Recommendations (iGOT / NSSTA / TPAC)
+     ↓
+Course Enrolment
+     ↓
+Upload Learning Material (PDF)
+     ↓
+RAG + Gemini LLM
+     ↓
+AI-Generated MCQs
+     ↓
+Quiz + Server-Side Scoring
+     ↓
+Progress & Dashboard Update
 ```
 
 ---
 
-⭐ Key Features
+## Architecture
 
-1. Competency Assessment
-
-Assess an official's knowledge and skills across relevant competency areas.
-
-Examples:
-
-Statistical Competencies
-
-Data Analysis
-
-Python / R / SQL
-
-AI / ML
-
-GIS
-
-Digital Governance
-
-Cybersecurity
-
-Leadership & Management
-
-
-2. Skill-Gap Analysis
-
-Compare the official's current competency level with the required level for their role.
-
-Current Level → Required Level → Skill Gap
-
-The system prioritizes important competency gaps.
-
-3. Personalized Learning Recommendations
-
-Recommend suitable training based on:
-
-Job role
-
-Current competency
-
-Skill gaps
-
-Previous training
-
-Experience
-
-Required competencies
-
-
-The platform is designed to support learning recommendations from iGoT Karmayogi and relevant NSSTA/TPAC training programmes.
-
-4. AI-Powered Quiz & MCQ Generation
-
-Officials/trainers can upload learning material such as documents or presentations.
-
-The system processes the content and uses RAG + LLM techniques to generate relevant:
-
-MCQs
-
-Quizzes
-
-Answers
-
-Explanations
-
-
-5. Progress Tracking
-
-Track:
-
-Assessment scores
-
-Quiz performance
-
-Learning progress
-
-Competency improvement
-
-Completed training
-
-
-6. Admin Dashboard
-
-Provide organization-level insights such as:
-
-Competency distribution
-
-Common skill gaps
-
-Training requirements
-
-Learning progress
-
-Training effectiveness
-
-
-
----
-
-🤖 AI / RAG Approach
-
-For uploaded learning material:
-
-Uploaded Material
-       ↓
-Text Extraction
-       ↓
-Text Chunking
-       ↓
-Embeddings
-       ↓
-Vector Search
-       ↓
-Relevant Content Retrieval
-       ↓
-LLM
-       ↓
-MCQs / Quiz / Explanations
-
-The retrieved learning content is used as context to improve the relevance of generated questions.
-
-
----
-
-🔗 Government Ecosystem Integration
-
-The solution is designed to integrate with existing government learning ecosystems through APIs.
-
-Target ecosystem:
-
-iGoT Karmayogi
-
-NSSTA
-
-TPAC
-
-
-Prototype Approach
-
-Where official API access/credentials are not available, the prototype will use mock/sample data through an API-ready integration layer.
-
-Official APIs can replace the mock integration when authorized access is provided.
-
-
----
-
-🧩 Prototype / MVP
-
-The initial MVP focuses on demonstrating the complete core workflow.
-
-MVP Modules
-
-1. Official Profile
-
-
-2. Competency Assessment
-
-
-3. Skill-Gap Analysis
-
-
-4. Personalized Recommendations
-
-
-5. Learning Material Upload
-
-
-6. RAG-based Content Retrieval
-
-
-7. AI MCQ / Quiz Generation
-
-
-8. Quiz Evaluation
-
-
-9. Progress Dashboard
-
-
-10. Basic Admin Dashboard
-
-
-
-MVP Demo Flow
-
-Profile
-   ↓
-Assessment
-   ↓
-Skill Gap
-   ↓
-Recommendation
-   ↓
-Upload PDF
-   ↓
-Generate AI Quiz
-   ↓
-Attempt Quiz
-   ↓
-View Result & Progress
-
-
----
-
-🏗️ System Architecture
-
+```
                 Government Official
-                          │
-                          ▼
-                   React Frontend
-                          │
-                       REST API
-                          │
-                          ▼
-                    FastAPI Backend
-                    /            \
-                   /              \
-                  ▼                ▼
-           PostgreSQL          AI Layer
-                                 │
-                           ┌─────┴─────┐
-                           ▼           ▼
-                          RAG         LLM
-                           │           │
-                           └─────┬─────┘
-                                 ▼
-                          AI Quiz / MCQ
-                                 │
-                                 ▼
-                           Result & Progress
-
-                                 │
-                                 ▼
-                         Integration Layer
-                          /      |       \
-                       iGoT    NSSTA     TPAC
-
+                        │
+                        ▼
+                React Frontend
+                        │
+                   REST API / JSON
+                        │
+                        ▼
+                FastAPI Backend
+                ┌───────┴────────┐
+                ▼                ▼
+          PostgreSQL          AI Layer
+          (Neon.tech)      (Gemini LLM
+                            + RAG
+                            + FAISS)
+                │                │
+                └────────┬───────┘
+                         ▼
+              AI-Generated MCQs / Quiz
+                         │
+                         ▼
+                Progress Update
+                         │
+                         ▼
+                Integration Layer
+              (iGOT | NSSTA | TPAC)
+```
 
 ---
 
-🛠️ Technology Stack
+## Technology Stack
 
-Frontend
-
-React.js
-
-HTML
-
-CSS
-
-JavaScript
-
-
-Backend
-
-Python
-
-Java
-
-FastAPI
-
-REST APIs
-
-
-Database
-
-PostgreSQL
-
-
-AI
-
-Large Language Model (LLM)
-
-Embeddings
-
-Retrieval-Augmented Generation (RAG)
-
-
-Document Processing
-
-PyMuPDF
-
-
-Vector Search
-
-FAISS
-
-
-Authentication
-
-JWT
-
-Role-Based Access Control (RBAC)
-
-
-Development & Deployment
-
-Git
-
-GitHub
-
-VS Code
-
-Vercel / Render or suitable cloud platform
-
-
+| Layer | Technology |
+|-------|------------|
+| Frontend | React.js, Vite, Tailwind CSS, Axios |
+| Backend | Python 3.11, FastAPI, SQLAlchemy, Pydantic |
+| Database | PostgreSQL (Neon.tech) |
+| AI / LLM | Google Gemini API, LangChain, RAG |
+| Vector Search | FAISS |
+| PDF Processing | PyPDF |
+| Authentication | JWT, Bcrypt, Role-Based Access Control |
+| Deployment | Vercel (Frontend), Render (Backend), Neon (Database) |
+| Version Control | Git, GitHub |
 
 ---
 
-📁 Project Structure
+## API Endpoints
 
-SIH26101/
+| Method | Endpoint | Purpose |
+|--------|----------|---------|
+| POST | `/api/auth/login` | Officer login (JWT) |
+| GET | `/api/auth/me` | Current user |
+| GET | `/api/profile` | Retrieve profile |
+| PUT | `/api/profile` | Update profile |
+| GET | `/api/competencies` | Competency data |
+| GET | `/api/skill-gaps/{user_id}` | Skill-gap analysis |
+| GET | `/api/assessment` | Assessment questions |
+| POST | `/api/assessment/submit` | Submit assessment |
+| GET | `/api/recommendations/{user_id}` | Personalized recommendations |
+| GET | `/api/courses` | Course catalogue |
+| POST | `/api/quiz/generate` | AI MCQ generation from PDF |
+| GET | `/api/quiz` | Retrieve quiz |
+| POST | `/api/quiz/submit` | Submit quiz (server-side scoring) |
+| GET | `/api/progress/{user_id}` | Learning progress |
+| GET | `/api/dashboard` | Aggregated dashboard data |
+| GET | `/api/health` | Health check |
+
+---
+
+## Project Structure
+
+```
+SIH26101_SamarthSetu/
 │
-├── frontend/          # React frontend
-├── backend/           # FastAPI backend
-├── ai/                # AI, RAG and recommendation modules
-├── database/          # Database schema and SQL
-├── docs/              # Architecture and documentation
+├── frontend/                # React + Vite UI
+│   ├── src/
+│   │   ├── components/      # Reusable UI components
+│   │   ├── pages/           # Route pages
+│   │   ├── data/            # Fallback mock data
+│   │   ├── App.jsx
+│   │   └── main.jsx
+│   └── package.json
 │
+├── backend/                 # FastAPI backend
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── config.py
+│   │   ├── database.py
+│   │   ├── core/security.py
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── routes/
+│   │   └── services/
+│   │       ├── ai_service.py
+│   │       └── competency_service.py
+│   ├── requirements.txt
+│   └── .env.example
+│
+├── docs/
 ├── .gitignore
+├── LICENSE
 └── README.md
-
-
----
-
-👥 Team
-
-Team: Sentinel
-
-Role	Responsibility
-
-Team Leader	Coordination, integration & overall system
-Frontend	React UI and dashboards
-Backend	FastAPI, APIs and database
-AI/ML	Competency and recommendation engine
-AI/RAG	Document processing, RAG and MCQ generation
-Documentation	Documentation, presentation and demo
-
-
+```
 
 ---
 
-🚧 Current Status
+## MVP Delivered
 
-Status: Under Development
-
-Current focus:
-
-Project architecture
-
-MVP development
-
-Frontend and backend setup
-
-Competency assessment
-
-Skill-gap analysis
-
-AI/RAG pipeline
-
-Quiz generation
-
-
+| Feature | Status |
+|---------|--------|
+| Officer Authentication (JWT) | ✅ |
+| Competency Profiling | ✅ |
+| Skill-Gap Analysis | ✅ |
+| Personalized Recommendations | ✅ |
+| iGOT Karmayogi Adapter Layer | ✅ |
+| PDF Upload + Processing | ✅ |
+| AI MCQ Generation (RAG + Gemini) | ✅ |
+| Quiz + Server-Side Scoring | ✅ |
+| Learner Dashboard | ✅ |
+| Admin Dashboard | ✅ |
+| Progress Tracking | ✅ |
+| Security (JWT + Bcrypt + RBAC) | ✅ |
 
 ---
 
-🔮 Future Scope
+## Local Setup
 
-After the MVP, the platform can be extended with:
+### Backend
 
-Authorized iGoT Karmayogi API integration
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload
+```
 
-NSSTA/TPAC integration
+### Frontend
 
-Government SSO
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-Multilingual learning
-
-Adaptive learning
-
-Advanced competency prediction
-
-More learning formats
-
-Enterprise-scale analytics
-
-Cloud-scale deployment
-
-Enhanced security and auditing
-
-
+- Frontend: `http://localhost:5173`  
+- Backend API Docs: `http://localhost:8000/docs`
 
 ---
 
-📌 Disclaimer
+## Team — Sentinel
 
-This project is being developed as an SIH 2026 prototype.
+| Role | Responsibility |
+|------|----------------|
+| Team Leader | Coordination, AI architecture, integration |
+| Frontend | React UI, dashboards, user flows |
+| Backend | FastAPI, REST APIs, database |
+| AI/ML | Competency engine, recommendation logic |
+| AI/RAG | PDF processing, MCQ generation, LLM integration |
+| Documentation | PPT, demo video, technical documentation |
 
-Government ecosystem integrations will depend on the availability of authorized APIs, credentials, datasets and access permissions.
+---
 
-No claim of live government-system integration is made unless officially implemented and authorized.
+## Future Scope
+
+- Authorized iGOT Karmayogi API integration
+- NSSTA / TPAC live integration
+- Government SSO (NIC)
+- Multilingual learning (Hindi + English)
+- Adaptive learning pathways
+- Virtual labs for emerging technologies
+- AI-powered virtual assistant
+- Enterprise-scale analytics and reporting
+- Meghraj Cloud deployment
+- Enhanced auditing and compliance
+
+---
+
+## Disclaimer
+
+This project is developed as a **Smart India Hackathon 2026 prototype**.
+
+Government ecosystem integrations (iGOT Karmayogi, NSSTA, TPAC) are **API-ready**. Mock/sample data is used where official API access or credentials are not yet available.
+
+No claim of live government-system integration is made unless officially authorized.
+
+
+**Built for India's Official Statistical System — SIH 2026**
+```
